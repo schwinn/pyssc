@@ -73,5 +73,5 @@ class Ssc_device():
 
         ssc_transaction = Ssc_transaction()
         ssc_transaction.TX = command
-        ssc_transaction.RX = data.decode('utf-8')
+        ssc_transaction.RX = data.decode('utf-8', errors='replace')
         return ssc_transaction
