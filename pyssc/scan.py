@@ -25,8 +25,7 @@ def __on_service_state_change(zeroconf: Zeroconf,
 
 def scan(scan_time_seconds=1) -> Ssc_device_setup:
     zeroconf = Zeroconf(ip_version=IPVersion.V6Only)
-    services = list(ZeroconfServiceTypes.find(zc=zeroconf))
-    ServiceBrowser(zeroconf, services, handlers=[__on_service_state_change])
+    ServiceBrowser(zeroconf,"_ssc._tcp.local.",handlers=[__on_service_state_change])
     time.sleep(scan_time_seconds)
     zeroconf.close()
     return ssc_device_setup
