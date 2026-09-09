@@ -113,13 +113,17 @@ class App(tk.Tk):
         if selected is None:
             return
         index, device = selected
-        threading.Thread(target=self._send_worker, args=(index, device, command, action), daemon=True).start()
+        zone = self._zone()
+        threading.Thread(target=self._send_worker, args=(index, device, zone, command, action), daemon=True).start()
 
-    def _send_worker(self, index, device, command, action) -> None:
+    def _zone(self) -> str:
+        zone = self.interface_entry.get().strip()
+        if zone and not zone.startswith("%"):
+            zone = "%" + zone
+        return zone
+
+    def _send_worker(self, index, device, zone, command, action) -> None:
         try:
-            zone = self.interface_entry.get().strip()
-            if zone and not zone.startswith("%"):
-                zone = "%" + zone
             if not device.connect(interface=zone):
                 raise RuntimeError(str(device.error))
             response = device.send_ssc(command, interface=zone)
@@ -137,13 +141,11 @@ class App(tk.Tk):
         if selected is None:
             return
         index, device = selected
-        threading.Thread(target=self._read_worker, args=(index, device), daemon=True).start()
+        zone = self._zone()
+        threading.Thread(target=self._read_worker, args=(index, device, zone), daemon=True).start()
 
-    def _read_worker(self, index, device) -> None:
+    def _read_worker(self, index, device, zone) -> None:
         try:
-            zone = self.interface_entry.get().strip()
-            if zone and not zone.startswith("%"):
-                zone = "%" + zone
             if not device.connect(interface=zone):
                 raise RuntimeError(str(device.error))
             response = device.send_ssc('{"audio":{"out":null}}', interface=zone)
