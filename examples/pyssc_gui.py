@@ -7,11 +7,15 @@ button, which makes this useful as a first diagnostic/control surface.
 import argparse
 import json
 import queue
+import pathlib
+import sys
 import threading
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-import pyssc
+# Allow running directly from a source checkout as well as from an installed package.
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
+import pyssc  # noqa: E402
 
 
 class App(tk.Tk):
