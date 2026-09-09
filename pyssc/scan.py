@@ -1,6 +1,5 @@
 import time
-from zeroconf import IPVersion, ServiceBrowser,\
-                     ServiceStateChange, Zeroconf, ZeroconfServiceTypes
+from zeroconf import IPVersion, ServiceBrowser, ServiceStateChange, Zeroconf
 from .ssc_device import Ssc_device
 from .ssc_device_setup import Ssc_device_setup
 
@@ -24,9 +23,14 @@ def __on_service_state_change(zeroconf: Zeroconf,
 
 
 def scan(scan_time_seconds=1) -> Ssc_device_setup:
+    # Query the SSC service directly.  Enumerating every DNS-SD service first
+    # sends the broad `_services._dns-sd._udp.local` query, which some speakers
+    # and direct laptop-to-speaker networks do not answer reliably.
+    global found_kh_devices, ssc_device_setup
+    found_kh_devices = []
+    ssc_device_setup = Ssc_device_setup(found_kh_devices)
     zeroconf = Zeroconf(ip_version=IPVersion.V6Only)
-    services = list(ZeroconfServiceTypes.find(zc=zeroconf))
-    ServiceBrowser(zeroconf, services, handlers=[__on_service_state_change])
+    ServiceBrowser(zeroconf, '_ssc._tcp.local.', handlers=[__on_service_state_change])
     time.sleep(scan_time_seconds)
     zeroconf.close()
     return ssc_device_setup
