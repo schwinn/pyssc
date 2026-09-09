@@ -63,4 +63,18 @@ Please note that Unix systems require you to specify the network interface. The 
 ssc_transaction = device_1.send_ssc('{"audio":{"out":{"mute":true}}}', interface = "")
 ```
 
+## Multi-monitor GUI (experimental)
+
+The package includes a small Tkinter control surface for checking several SSC
+monitors from one screen. Discovery is read-only; mute, unmute, and output
+level commands are sent only when their buttons are pressed.
+
+```sh
+python examples/pyssc_gui.py --interface en0
+```
+
+For Windows link-local IPv6, pass the numeric interface index instead, for
+example `--interface 14`. Leave the field empty when the device address is
+already scoped.
+
 To find out which commands work for your specific SSC Device please refer to the [SSC Documentation](https://assets.sennheiser.com/global-downloads/file/9541/TI_1093_v2.0_Sennheiser_Sound_Control_Protocol_ew_D1_EN.pdf).
